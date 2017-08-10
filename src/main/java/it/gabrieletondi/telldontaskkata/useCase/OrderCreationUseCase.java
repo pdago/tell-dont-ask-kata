@@ -23,7 +23,7 @@ public class OrderCreationUseCase {
     }
 
     public void run(SellItemsRequest request) {
-        Order order = new Order();
+        Order order = new Order(1, OrderStatus.CREATED);
 
         for (SellItemRequest itemRequest : request.getRequests()) {
 
@@ -33,7 +33,6 @@ public class OrderCreationUseCase {
                 throw new UnknownProductException();
             }
             else {
-
                 final OrderItem orderItem = new OrderItem(product, itemRequest.getQuantity());
                 order.addItem(orderItem);
             }

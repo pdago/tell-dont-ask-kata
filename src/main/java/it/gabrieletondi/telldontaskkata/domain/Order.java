@@ -1,13 +1,14 @@
 package it.gabrieletondi.telldontaskkata.domain;
 
-import it.gabrieletondi.telldontaskkata.useCase.ApprovedOrderCannotBeRejectedException;
-import it.gabrieletondi.telldontaskkata.useCase.RejectedOrderCannotBeApprovedException;
-import it.gabrieletondi.telldontaskkata.useCase.ShippedOrdersCannotBeChangedException;
+import it.gabrieletondi.telldontaskkata.useCase.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.gabrieletondi.telldontaskkata.domain.OrderStatus.CREATED;
+import static it.gabrieletondi.telldontaskkata.domain.OrderStatus.REJECTED;
+import static it.gabrieletondi.telldontaskkata.domain.OrderStatus.SHIPPED;
 import static java.math.RoundingMode.HALF_UP;
 
 public class Order {
@@ -16,9 +17,9 @@ public class Order {
     private OrderStatus status = OrderStatus.CREATED;
     private int id;
 
-    public Order() {
-        status = OrderStatus.CREATED;
-        id = 1;
+    public Order(int id, OrderStatus status) {
+        this.status = status;
+        this.id = id;
         items = new ArrayList<>();
         currency = "EUR";
     }
@@ -51,6 +52,14 @@ public class Order {
     }
 
     public void ship() {
+		if (status.equals(CREATED) || status.equals(REJECTED)) {
+			throw new OrderCannotBeShippedException();
+		}
+
+		if (status.equals(SHIPPED)) {
+			throw new OrderCannotBeShippedTwiceException();
+		}
+
         status = OrderStatus.SHIPPED;
     }
 
