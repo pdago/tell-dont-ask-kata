@@ -7,27 +7,21 @@ public class Product {
     private BigDecimal price;
     private Category category;
 
-    public String getName() {
-        return name;
+    public Product(String name, Category category, BigDecimal price) {
+        this.name = name;
+        this.category = category;
+        this.price = price;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
     public Category getCategory() {
         return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 }
