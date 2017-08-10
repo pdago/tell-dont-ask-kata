@@ -5,21 +5,27 @@ import it.gabrieletondi.telldontaskkata.useCase.RejectedOrderCannotBeApprovedExc
 import it.gabrieletondi.telldontaskkata.useCase.ShippedOrdersCannotBeChangedException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+import static java.math.RoundingMode.HALF_UP;
+
 public class Order {
-    private BigDecimal total;
     private String currency;
     private List<OrderItem> items;
-    private BigDecimal tax;
     private OrderStatus status = OrderStatus.CREATED;
     private int id;
 
     public Order() {
         status = OrderStatus.CREATED;
         id = 1;
+        items = new ArrayList<>();
+        currency = "EUR";
     }
 
+    public void addItem(OrderItem item) {
+    	items.add(item);
+	}
     public void approve() {
         if (this.status.equals(OrderStatus.SHIPPED)) {
             throw new ShippedOrdersCannotBeChangedException();
@@ -48,36 +54,30 @@ public class Order {
         status = OrderStatus.SHIPPED;
     }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
+    public BigDecimal computeTotal() {
+		BigDecimal total = new BigDecimal(0.0);
+		for (OrderItem item : items) {
+			total = total.add(item.computeTaxedAmount()).setScale(2, HALF_UP);
+		}
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
+		return total;
     }
 
     public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
     public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
-    }
+    public BigDecimal computeTax() {
+		BigDecimal tax = new BigDecimal(0);
+		for (OrderItem item : items) {
+			tax = tax.add(item.computeTax());
+		}
 
-    public BigDecimal getTax() {
-        return tax;
-    }
-
-    public void setTax(BigDecimal tax) {
-        this.tax = tax;
+		return tax;
     }
 
     public OrderStatus getStatus() {

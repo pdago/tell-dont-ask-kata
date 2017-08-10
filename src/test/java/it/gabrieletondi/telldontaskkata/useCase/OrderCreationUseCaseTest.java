@@ -10,9 +10,7 @@ import it.gabrieletondi.telldontaskkata.repository.ProductCatalog;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -36,40 +34,37 @@ public class OrderCreationUseCaseTest {
     @Test
     public void sellMultipleItems() throws Exception {
         SellItemRequest saladRequest = new SellItemRequest("salad", 2);
-
         SellItemRequest tomatoRequest = new SellItemRequest("tomato", 3);
 
         final SellItemsRequest request = new SellItemsRequest();
-        request.setRequests(new ArrayList<>());
-        request.getRequests().add(saladRequest);
-        request.getRequests().add(tomatoRequest);
+        request.add(saladRequest);
+        request.add(tomatoRequest);
 
         useCase.run(request);
 
         final Order insertedOrder = orderRepository.getSavedOrder();
         assertThat(insertedOrder.getStatus(), is(OrderStatus.CREATED));
-        assertThat(insertedOrder.getTotal(), is(new BigDecimal("23.20")));
-        assertThat(insertedOrder.getTax(), is(new BigDecimal("2.13")));
+        assertThat(insertedOrder.computeTotal(), is(new BigDecimal("23.20")));
+        assertThat(insertedOrder.computeTax(), is(new BigDecimal("2.13")));
         assertThat(insertedOrder.getCurrency(), is("EUR"));
         assertThat(insertedOrder.getItems(), hasSize(2));
         assertThat(insertedOrder.getItems().get(0).getProduct().getName(), is("salad"));
         assertThat(insertedOrder.getItems().get(0).getProduct().getPrice(), is(new BigDecimal("3.56")));
         assertThat(insertedOrder.getItems().get(0).getQuantity(), is(2));
-        assertThat(insertedOrder.getItems().get(0).getTaxedAmount(), is(new BigDecimal("7.84")));
-        assertThat(insertedOrder.getItems().get(0).getTax(), is(new BigDecimal("0.72")));
+        assertThat(insertedOrder.getItems().get(0).computeTaxedAmount(), is(new BigDecimal("7.84")));
+        assertThat(insertedOrder.getItems().get(0).computeTax(), is(new BigDecimal("0.72")));
         assertThat(insertedOrder.getItems().get(1).getProduct().getName(), is("tomato"));
         assertThat(insertedOrder.getItems().get(1).getProduct().getPrice(), is(new BigDecimal("4.65")));
         assertThat(insertedOrder.getItems().get(1).getQuantity(), is(3));
-        assertThat(insertedOrder.getItems().get(1).getTaxedAmount(), is(new BigDecimal("15.36")));
-        assertThat(insertedOrder.getItems().get(1).getTax(), is(new BigDecimal("1.41")));
+        assertThat(insertedOrder.getItems().get(1).computeTaxedAmount(), is(new BigDecimal("15.36")));
+        assertThat(insertedOrder.getItems().get(1).computeTax(), is(new BigDecimal("1.41")));
     }
 
     @Test(expected = UnknownProductException.class)
     public void unknownProduct() throws Exception {
         SellItemsRequest request = new SellItemsRequest();
-        request.setRequests(new ArrayList<>());
         SellItemRequest unknownProductRequest = new SellItemRequest("unknown product", 1);
-        request.getRequests().add(unknownProductRequest);
+        request.add(unknownProductRequest);
 
         useCase.run(request);
     }
