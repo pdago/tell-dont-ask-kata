@@ -44,6 +44,10 @@ public class Order {
         status = OrderStatus.REJECTED;
     }
 
+    public void ship() {
+        status = OrderStatus.SHIPPED;
+    }
+
     public BigDecimal getTotal() {
         return total;
     }
@@ -90,9 +94,5 @@ public class Order {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void ship() {
-        status = OrderStatus.SHIPPED;
     }
 }

@@ -4,6 +4,18 @@ public class OrderApprovalRequest {
     private int orderId;
     private boolean approved;
 
+    public OrderApprovalRequest() {
+        orderId = 1;
+        approved = false;
+    }
+
+    public void approve() {
+        approved = true;
+    }
+
+    public void reject() {
+        approved = false;
+    }
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
