@@ -12,8 +12,13 @@ public class Order {
     private String currency;
     private List<OrderItem> items;
     private BigDecimal tax;
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.CREATED;
     private int id;
+
+    public Order() {
+        status = OrderStatus.CREATED;
+        id = 1;
+    }
 
     public void approve() {
         if (this.status.equals(OrderStatus.SHIPPED)) {
@@ -85,5 +90,9 @@ public class Order {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void ship() {
+        status = OrderStatus.SHIPPED;
     }
 }
