@@ -1,5 +1,7 @@
 package it.gabrieletondi.telldontaskkata.useCase;
 
+import it.gabrieletondi.telldontaskkata.domain.Order;
+
 public class OrderApprovalRequest {
     private int orderId;
     private boolean approved;
@@ -13,22 +15,14 @@ public class OrderApprovalRequest {
         approved = true;
     }
 
-    public void reject() {
-        approved = false;
-    }
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    public void processOrder(Order order) {
+        if (approved)
+            order.approve();
+        else
+            order.reject();
     }
 
     public int getOrderId() {
         return orderId;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
-    }
-
-    public boolean isApproved() {
-        return approved;
     }
 }
