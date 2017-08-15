@@ -23,20 +23,7 @@ public class OrderCreationUseCase {
     }
 
     public void run(SellItemsRequest request) {
-        Order order = new Order(1, OrderStatus.CREATED);
-
-        for (SellItemRequest itemRequest : request.getRequests()) {
-
-            Product product = productCatalog.getByName(itemRequest.getProductName());
-
-            if (product == null) {
-                throw new UnknownProductException();
-            }
-            else {
-                final OrderItem orderItem = new OrderItem(product, itemRequest.getQuantity());
-                order.addItem(orderItem);
-            }
-        }
+        Order order = request.generateOrder(productCatalog);
 
         orderRepository.save(order);
     }
